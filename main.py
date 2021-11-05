@@ -28,7 +28,7 @@ start_time=time.time()
 #Title for the webpage
 tit1,tit2 = st.beta_columns((4, 1))
 tit1.markdown("<h1 style='text-align: center;'><u>Activity/ Pain Prediction With Wearable Technology Data</u> </h1>",unsafe_allow_html=True)
-st.sidebar.title("Dataset and ML Classifier")
+st.sidebar.title("Dataset and ML Classifiers")
 
 dataset_select=st.sidebar.selectbox("Select Dataset: ",('AppleWatch Data',"Fitbit Data"))
 classifier_select = st.sidebar.selectbox("Select ML Classifier: ", ("Logistic Regression","KNN","SVM","Decision Trees",
@@ -37,13 +37,13 @@ classifier_select = st.sidebar.selectbox("Select ML Classifier: ", ("Logistic Re
 LE = LabelEncoder()
 def get_dataset(dataset_select):
     if dataset_select == "Heart Attack":
-        data=pd.read_csv("https://raw.githubusercontent.com/ajinkyalahade/Streamlit_ML_WebApp/main/Data/heart.csv")
-        st.header("Heart Attack Probability- UCI Data Based Prediction")
+        data=pd.read_csv("https://github.com/ajinkyalahade/PainPredictionProject/blob/main/Data/data_applewatch.csv")
+        st.header("Activity Data Apple Watch")
         return data
 
     else:
-        data = pd.read_csv("https://raw.githubusercontent.com/ajinkyalahade/Heart-Failure-Prediction/main/heart_failure_clinical_records_dataset.csv")
-        st.header("Heart Disease")
+        data = pd.read_csv("https://raw.githubusercontent.com/ajinkyalahade/PainPredictionProject/main/Data/data_fitbit.csv")
+        st.header("Activity Data Fitbit Watch")
         return data
 
 data = get_dataset(dataset_select)
