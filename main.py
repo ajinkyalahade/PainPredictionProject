@@ -36,8 +36,8 @@ classifier_select = st.sidebar.selectbox("Select ML Classifier: ", ("Logistic Re
 
 LE = LabelEncoder()
 def get_dataset(dataset_select):
-    if dataset_select == "Heart Attack":
-        data=pd.read_csv("https://github.com/ajinkyalahade/PainPredictionProject/blob/main/Data/data_applewatch.csv")
+    if dataset_select == "AppleWatch Data":
+        data=pd.read_csv("https://raw.githubusercontent.com/ajinkyalahade/PainPredictionProject/main/Data/data_applewatch.csv")
         st.header("Activity Data Apple Watch")
         return data
 
@@ -49,13 +49,13 @@ def get_dataset(dataset_select):
 data = get_dataset(dataset_select)
 
 def selected_dataset(dataset_select):
-    if dataset_select == "Heart Attack":
-        X = data.drop(["output"],axis=1)
-        Y = data.output
+    if dataset_select == "AppleWatch Data":
+        X = data.drop(["activitytag"],axis=1)
+        Y = data.activitytag
         return X,Y
-    elif dataset_select == "Heart Disease":
-        X = data.drop(["DEATH_EVENT"],axis=1)
-        Y = data.DEATH_EVENT
+    elif dataset_select == "Fitbit Data":
+        X = data.drop(["tag"],axis=1)
+        Y = data.tag
         return X,Y
 
 X,Y = selected_dataset(dataset_select)
@@ -65,12 +65,12 @@ def plot_op(dataset_select):
     col1, col2 = st.beta_columns((1, 5))
     plt.figure(figsize=(12, 3))
     plt.title("Classes in 'Y'")
-    if dataset_select == "Heart Attack":
+    if dataset_select == "AppleWatch Data":
         col1.write(Y)
         sns.countplot(Y, palette='colorblind')
         col2.pyplot()
 
-    elif dataset_select == "Heart Disease":
+    elif dataset_select == "Fitbit Data":
         col1.write(Y)
         sns.countplot(Y, palette='colorblind')
         col2.pyplot()
@@ -257,15 +257,15 @@ st.info(f"Total execution time: {round((end_time - start_time),4)} seconds")
 #Get user values
 def user_inputs_ui(da,data):
     user_val = {}
-    if dataset_select == "Heart Disease":
-        X = data.drop(["DEATH_EVENT"], axis=1)
+    if dataset_select == "Fitbit Data":
+        X = data.drop(["tag"], axis=1)
         for col in X.columns:
             name=col
             col = st.number_input(col, abs(X[col].min()-round(X[col].std())), abs(X[col].max()+round(X[col].std())))
             user_val[name] = round((col),4)
 
-    elif dataset_select == "Heart Attack":
-        X = data.drop(["output"], axis=1)
+    elif dataset_select == "AppleWatch Data":
+        X = data.drop(["activitytag"], axis=1)
         for col in X.columns:
             name=col
             col = st.number_input(col, abs(X[col].min()-round(X[col].std())), abs(X[col].max()+round(X[col].std())))
@@ -278,7 +278,7 @@ st.markdown("<hr>",unsafe_allow_html=True)
 st.header("2) User Values")
 with st.beta_expander("Learn More"):
     st.markdown("""
-    Please fill in your data to see the results. https://github.com/ajinkyalahade/Heart-Disease---Classifications-Machine-Learning-/blob/master/Heart_disease.ipynb<br>
+    Please fill in your data to see the results.<br>
     <p style='color: red;'> 1 - High Risk </p> <p style='color: green;'> 0 - Low Risk </p>
     """,unsafe_allow_html=True)
 
@@ -287,19 +287,19 @@ user_val=user_inputs_ui(dataset_select,data)
 #@st.cache(suppress_st_warning=True)
 def user_predict():
     global U_pred
-    if dataset_select == "Heart Disease":
-        X = data.drop(["DEATH_EVENT"], axis=1)
+    if dataset_select == "AppleWatch Data":
+        X = data.drop(["activitytag"], axis=1)
         U_pred = clf.predict([[user_val[col] for col in X.columns]])
 
-    elif dataset_select == "Heart Attack":
-        X = data.drop(["output"], axis=1)
+    elif dataset_select == "Fitbit Data":
+        X = data.drop(["tag"], axis=1)
         U_pred = clf.predict([[user_val[col] for col in X.columns]])
 
     st.subheader("Your Status: ")
     if U_pred == 0:
-        st.write(U_pred[0], " - YOU ARE NOT AT RISK -- THIS IS NOT A PROFESSIONAL MEDICAL ADVISE - CONTACT YOUR PRIMARY CARE PROVIDER")
+        st.write(U_pred[0], " - NOT A PAIN EVENT -- THIS IS NOT A PROFESSIONAL MEDICAL ADVISE - CONTACT YOUR PRIMARY CARE PROVIDER")
     else:
-        st.write(U_pred[0], "- YOU MIGHT BE AT RISK; PLEASE SEE YOUR DOCTOR -- THIS IS NOT A PROFESSIONAL MEDICAL ADVISE")
+        st.write(U_pred[0], "- POTENTIAL PAIN EVENT; PLEASE SEE YOUR DOCTOR -- THIS IS NOT A PROFESSIONAL MEDICAL ADVISE")
 user_predict()  #Predict the status of user.
 
 
